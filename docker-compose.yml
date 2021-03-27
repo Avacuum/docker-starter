@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  php:
+    build:
+      context: ./
+      dockerfile: php.dockerfile
+    volumes:
+      - ./${PROJECT_FOLDER}:/var/www
+    depends_on:
+      - db
+    container_name: php
+    working_dir: /var/www
+
+  db:
+    image: mysql:5.7.22
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports: 
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: qwerty123
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./${PROJECT_FOLDER}:/var/www
+      - ./nginx-data:/etc/nginx/conf.d
